@@ -3,8 +3,8 @@ Config.db = {};
 Config.app={};
 Config.auth = {};
 
-Config.db.user = 'admin'
-Config.db.pass = 'd0ntKnowIfThisIsSave'
+Config.db.user = 'dbAdmin'
+Config.db.pass = 'onlythedatabaseinscope'
 //todo plaintext password
 
 Config.db.host = 'pcjc5ikfd431jnvz.myfritz.net:60420';
