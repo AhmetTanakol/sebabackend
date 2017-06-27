@@ -63,7 +63,7 @@ describe('REST API test', function () {
     });
 
 
-    describe('Movie lifecycle', function () {
+ /*   describe('Movie lifecycle', function () {
 
         var testmovie;
 
@@ -175,6 +175,7 @@ describe('REST API test', function () {
 
         })
     });
+  */
 });
 
 
