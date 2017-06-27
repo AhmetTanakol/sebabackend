@@ -67,8 +67,10 @@ module.exports.unregister = function(req, res) {
     });
 };
 
-module.exports.getUsers = function (req, res) {
-    res.User.find(function(err, users) {
+module.exports.getUsers =
+//todo remove
+    function (req, res) {
+    User.find(function(err, users) {
         if (err) {
             res.status(500).send(err);
             return;

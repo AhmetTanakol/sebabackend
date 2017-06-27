@@ -11,7 +11,7 @@ function userRoutes(passport) {
     router.post('/unregister', passport.authenticate('jwt', {session: false}),userController.unregister)
 
     router.route('/')
-        .post(userController.getUsers);
+        .get(userController.getUsers); //todo remove
     return router;
 
 }

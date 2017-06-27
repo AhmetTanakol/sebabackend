@@ -19,7 +19,6 @@ Config.db.name = 'WorkForceDB';
 // Use environment defined port or 3000
 Config.app.port = process.env.PORT || 3000;
 
-Config.auth.jwtSecret = "very secret secret";
-//Todo :set up new secret
+Config.auth.jwtSecret = "justsome other text than before";
 
 module.exports = Config;
