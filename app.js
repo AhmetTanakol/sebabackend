@@ -33,10 +33,12 @@ jwtConfig(passport);
  * routing
  */
 var userRoutes = require("./user/userRoutes");
+var matchRoutes = require("./match/matchRoutes");
 //var movieRoutes = require("./movie/movieRoutes");
 //todo add routes here
 
 //app.use('/api/movies', movieRoutes(passport));
 app.use('/api/user', userRoutes(passport));
+app.use('/api/match', matchRoutes(passport));
 module.exports = app;
 
