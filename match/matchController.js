@@ -1,10 +1,13 @@
 var Match = require('./matchSchema');
 
-exports.matchRefugee = function(req, res) {
+module.exports.matchRefugee = function(req, res) {
 
 };
 
-exports.matchCompany = function(req, res) {
+module.exports.matchCompany = function(req, res) {
 
 };
 
+module.exports.ahmetTest = function (req, res) {
+    res.json({'response': 'test'});
+};
