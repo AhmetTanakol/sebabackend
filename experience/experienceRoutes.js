@@ -1,8 +1,8 @@
-module.exports = matchRoutes;
+module.exports = experienceRoutes;
 
-function matchRoutes(passport) {
+function experienceRoutes(passport) {
 
-    var matchRoutesController = require('./matchController');
+    var experienceRoutesController = require('./experienceController');
     var router = require('express').Router();
     var unless = require('express-unless')
 
@@ -12,8 +12,6 @@ function matchRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
-
-    router.get('/deneme', matchRoutesController.ahmetTest);
 
     return router;
 }

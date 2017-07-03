@@ -35,8 +35,8 @@ var userSchema = new mongoose.Schema({
 userSchema.pre('save', function(next) {
     var user = this;
 
-    if (self.updatedAt) {
-      self.updatedAt = new Date();
+    if (user.updatedAt) {
+      user.updatedAt = new Date();
     }
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
