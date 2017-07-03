@@ -1,0 +1,1 @@
+var Location = require('./locationSchema');

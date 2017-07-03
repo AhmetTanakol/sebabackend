@@ -1,0 +1,1 @@
+var Certificate = require('./certificateSchema');
