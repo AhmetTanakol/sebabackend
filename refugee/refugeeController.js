@@ -26,4 +26,3 @@ module.exports.findRefugees = function (req, res) {
       res.status(200).json(refugees);
     });
 };
-
