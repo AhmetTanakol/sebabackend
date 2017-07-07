@@ -13,7 +13,8 @@ function matchRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
-    router.get('/deneme', matchRoutesController.ahmetTest);
+    router.post('/matchWithRefugee', matchRoutesController.matchWithRefugee);
+    router.post('/matchWithCompany', matchRoutesController.matchWithCompany);
 
     return router;
 }

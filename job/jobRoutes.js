@@ -12,6 +12,7 @@ function jobRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
+    router.get('/', jobRoutesController.list);
 
     return router;
 }
