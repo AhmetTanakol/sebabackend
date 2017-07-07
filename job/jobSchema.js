@@ -19,6 +19,9 @@ var jobSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  title: {
+    type: String
+  },
   company: {
     type: String,
     ref: 'Company'

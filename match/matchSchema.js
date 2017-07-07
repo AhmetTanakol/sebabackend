@@ -30,6 +30,14 @@ var matchSchema = new mongoose.Schema({
   job: {
     type: String,
     ref: 'Job'
+  },
+  isAddedByRefugee: {
+    type: Boolean,
+    default: false
+  },
+  isAddedByCompany: {
+    type: Boolean,
+    default: false
   }
 });
 
