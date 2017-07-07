@@ -13,5 +13,7 @@ function companyRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+    router.get('/findCompanies', companyRoutesController.findCompanies);
+
     return router;
 }
