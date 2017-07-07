@@ -13,5 +13,7 @@ function skillRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+    router.get('/', skillRoutesController.list);
+
     return router;
 }

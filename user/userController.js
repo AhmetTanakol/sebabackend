@@ -84,9 +84,14 @@ function createToken(user) {
     var tokenPayload = {
         user: {
             _id: user._id,
-            username: user.username
+            username: user.username,
+            type: user.type
         }
-
     };
+    if (user.type === 'refugee') {
+      tokenPayload.user.refugee = user.refugee;
+    } else {
+      tokenPayload.user.company = user.company;
+    }
     return jwt.encode(tokenPayload,Config.auth.jwtSecret);
 };
