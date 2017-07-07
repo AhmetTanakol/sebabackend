@@ -13,5 +13,7 @@ function refugeeRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+    router.get('/findRefugees', refugeeRoutesController.findRefugees);
+
     return router;
 }

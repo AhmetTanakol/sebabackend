@@ -29,6 +29,17 @@ var userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  type: {
+    type: String
+  },
+  refugee: {
+    type: String,
+    ref: 'Refugee'
+  },
+  company: {
+    type: String,
+    ref: 'Company'
   }
 });
 

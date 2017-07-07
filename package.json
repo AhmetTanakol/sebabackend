@@ -11,6 +11,7 @@
     "url": "https://github.com/AhmetTanakol/sebabackend"
   },
   "dependencies": {
+    "async": "^2.5.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.0",
     "cors": "^2.7.1",

@@ -56,8 +56,14 @@ var refugeeSchema = new mongoose.Schema({
   skills: {
     type: [
       {
-        type: String,
-        ref: 'Skill'
+        name: {
+          type: String,
+          ref: 'Skill'
+        },
+        power: {
+          type: Number
+        },
+        _id: false
       }
     ]
   },

@@ -13,5 +13,7 @@ function locationRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+    router.get('/', locationRoutesController.list);
+
     return router;
 }
