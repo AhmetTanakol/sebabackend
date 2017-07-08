@@ -32,11 +32,33 @@ jwtConfig(passport);
 /**
  * routing
  */
-var userRoutes = require("./user/userRoutes");
+var userRoutes = require('./user/userRoutes');
+var matchRoutes = require('./match/matchRoutes');
+var certificateRoutes = require('./certificate/certificateRoutes');
+var companyRoutes = require('./company/companyRoutes');
+var educationRoutes = require('./education/educationRoutes');
+var experienceRoutes = require('./experience/experienceRoutes');
+var industryRoutes = require('./industry/industryRoutes');
+var jobRoutes = require('./job/jobRoutes');
+var languageRoutes = require('./language/languageRoutes');
+var locationRoutes = require('./location/locationRoutes');
+var refugeeRoutes = require('./refugee/refugeeRoutes');
+var skillRoutes = require('./skill/skillRoutes');
 //var movieRoutes = require("./movie/movieRoutes");
 //todo add routes here
 
 //app.use('/api/movies', movieRoutes(passport));
 app.use('/api/user', userRoutes(passport));
+app.use('/api/match', matchRoutes(passport));
+app.use('/api/certificate', certificateRoutes(passport));
+app.use('/api/company', companyRoutes(passport));
+app.use('/api/education', educationRoutes(passport));
+app.use('/api/experience', experienceRoutes(passport));
+app.use('/api/industry', industryRoutes(passport));
+app.use('/api/job', jobRoutes(passport));
+app.use('/api/language', languageRoutes(passport));
+app.use('/api/location', locationRoutes(passport));
+app.use('/api/refugee', refugeeRoutes(passport));
+app.use('/api/skill', skillRoutes(passport));
 module.exports = app;
 
