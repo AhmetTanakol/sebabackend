@@ -20,8 +20,7 @@ var companySchema = new mongoose.Schema({
     default: false
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   info: {
     type: String
@@ -50,6 +49,10 @@ var companySchema = new mongoose.Schema({
         ref: 'Industry'
       }
     ]
+  },
+  user: {
+    type: String,
+    ref: 'User'
   }
 });
 
