@@ -1,5 +1,7 @@
 var Config = require('../config/config.js');
 var User = require('./userSchema');
+var Refugee = require('./../refugee/refugeeSchema');
+var Company = require('./../company/companySchema');
 var jwt = require('jwt-simple');
 
 module.exports.login = function(req, res){
@@ -48,14 +50,40 @@ module.exports.signup = function(req, res){
 
     user.username = req.body.username;
     user.password = req.body.password;
+    user.type = req.body.type;
 
-    user.save(function(err) {
+    user.save(function(err, newUser) {
         if (err) {
             res.status(500).send(err);
             return;
         }
-
-        res.status(201).json({token: createToken(user)});
+        if (user.type === 'refugee') {
+          var newRefugee = new Refugee({
+            user: newUser
+          });
+          newRefugee.save(function(saveError,createdRefugee) {
+            if (saveError) {
+              res.status(500).send(saveError);
+              return;
+            }
+            user.refugee = createdRefugee._id;
+            user.save();
+            res.status(201).json({token: createToken(user)});
+          });
+        } else {
+          var newCompany = new Company({
+            user: newUser
+          });
+          newCompany.save(function(saveError,createdCompany) {
+            if (saveError) {
+              res.status(500).send(saveError);
+              return;
+            }
+            user.company = createdCompany._id;
+            user.save();
+            res.status(201).json({token: createToken(user)});
+          });
+        }
     });
 };
 
@@ -84,9 +112,14 @@ function createToken(user) {
     var tokenPayload = {
         user: {
             _id: user._id,
-            username: user.username
+            username: user.username,
+            type: user.type
         }
-
     };
+    if (user.type === 'refugee') {
+      tokenPayload.user.refugee = user.refugee;
+    } else {
+      tokenPayload.user.company = user.company;
+    }
     return jwt.encode(tokenPayload,Config.auth.jwtSecret);
 };

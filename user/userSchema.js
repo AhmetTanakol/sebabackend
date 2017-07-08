@@ -1,23 +1,54 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
+var shortId = require('shortid');
 
-var userSchema = mongoose.Schema({
-    //todo change to our schema
-
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    }
+var userSchema = new mongoose.Schema({
+  //todo change to our schema
+  _id: {
+    type: String,
+    unique: true,
+    default: shortId.generate
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  username: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  type: {
+    type: String
+  },
+  refugee: {
+    type: String,
+    ref: 'Refugee'
+  },
+  company: {
+    type: String,
+    ref: 'Company'
+  }
 });
 
 userSchema.pre('save', function(next) {
     var user = this;
 
+    if (user.updatedAt) {
+      user.updatedAt = new Date();
+    }
     // only hash the password if it has been modified (or is new)
     if (!user.isModified('password')) return next();
 
