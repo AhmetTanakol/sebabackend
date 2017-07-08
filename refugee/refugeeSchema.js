@@ -20,8 +20,7 @@ var refugeeSchema = new mongoose.Schema({
     default: false
   },
   name: {
-    type: String,
-    required: true
+    type: String
   },
   description: {
     type: String
@@ -102,6 +101,10 @@ var refugeeSchema = new mongoose.Schema({
   },
   email: {
     type: String
+  },
+  user: {
+    type: String,
+    ref: 'User'
   }
 });
 

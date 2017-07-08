@@ -1,5 +1,6 @@
 var Company = require('./companySchema');
 var Job = require('./../job/jobSchema');
+var Match = require('./../match/matchSchema');
 
 var async = require('async');
 var _ = require('lodash');
@@ -35,7 +36,7 @@ module.exports.findCompanies = function(req, res) {
       }
       var jobQuery = {
         company: {
-          $in: _.map(companies, '_id')
+          $in: _.uniq(_.map(companies, '_id'))
         }
       };
       if (req.query.skill) {
