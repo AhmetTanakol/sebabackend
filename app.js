@@ -44,10 +44,8 @@ var languageRoutes = require('./language/languageRoutes');
 var locationRoutes = require('./location/locationRoutes');
 var refugeeRoutes = require('./refugee/refugeeRoutes');
 var skillRoutes = require('./skill/skillRoutes');
-//var movieRoutes = require("./movie/movieRoutes");
 //todo add routes here
 
-//app.use('/api/movies', movieRoutes(passport));
 app.use('/api/user', userRoutes(passport));
 app.use('/api/match', matchRoutes(passport));
 app.use('/api/certificate', certificateRoutes(passport));

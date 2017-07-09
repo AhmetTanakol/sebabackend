@@ -33,6 +33,7 @@ module.exports.findCompanies = function(req, res) {
     function (companies, cb) {
       if (_.isEmpty(companies)) {
         cb(null, []);
+        return;
       }
       var jobQuery = {
         company: {
@@ -56,6 +57,39 @@ module.exports.findCompanies = function(req, res) {
             return;
           }
           cb(null, jobs);
+        });
+    },
+    function(jobs, cb) {
+      if (_.isEmpty(jobs)) {
+        cb(null, []);
+        return;
+      }
+      var filteredJobs = [];
+      var matchQuery = {
+        refugee: req.query.user,
+        job: {
+          $in: _.map(jobs, '_id')
+        },
+        isAddedByRefugee: true
+      };
+
+      Match
+        .find(matchQuery)
+        .select('job')
+        .exec(function (err, matches) {
+          if (err) {
+            cb(err);
+            return;
+          }
+          var jobIds = _.map(matches, 'job');
+          if (!_.isEmpty(matches)) {
+            filteredJobs = _.filter(jobs, function(job) {
+              return !_.includes(jobIds, job._id);
+            });
+          } else {
+            filteredJobs = jobs;
+          }
+          cb(null, filteredJobs);
         });
     }
   )(function(error, jobs) {
