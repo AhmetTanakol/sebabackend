@@ -1,8 +1,8 @@
-module.exports = languageRoutes;
+module.exports = countryRoutes;
 
-function languageRoutes(passport) {
+function countryRoutes(passport) {
 
-    var languageRoutesController = require('./languageController');
+    var countryRoutesController = require('./countryController');
     var router = require('express').Router();
     var unless = require('express-unless')
 
@@ -12,8 +12,8 @@ function languageRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
-	
-	router.get('/', languageRoutesController.list);
+
+    router.get('/', countryRoutesController.list);
 
     return router;
 }
