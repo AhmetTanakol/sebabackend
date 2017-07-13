@@ -44,7 +44,7 @@ var languageRoutes = require('./language/languageRoutes');
 var locationRoutes = require('./location/locationRoutes');
 var refugeeRoutes = require('./refugee/refugeeRoutes');
 var skillRoutes = require('./skill/skillRoutes');
-var countryRoutes = require('./country/locationRoutes');
+var countryRoutes = require('./country/countryRoutes');
 //todo add routes here
 
 app.use('/api/user', userRoutes(passport));

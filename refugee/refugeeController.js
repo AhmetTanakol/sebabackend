@@ -8,12 +8,32 @@ var moment = require('moment');
 // Create endpoint /api/refugee/:refugee_id for GET
 module.exports.getRefugee = function(req, res) {
     // Use the Refugee model to find a specific refugee
-    Refugee.findById(req.params.id, function(err, refugee) {
+    Refugee.findById(req.params.refugee_id, function(err, refugee) {
         if (err) {
             res.status(500).send(err)
             return;
         };
 
+        res.json(refugee);
+    });
+};
+
+// Create endpoint /api/refugee/:refugee_id for PUT
+module.exports.putRefugee = function(req, res) {
+    // Use the Refugee model to find a specific refugee and update it
+    Refugee.findByIdAndUpdate(
+        req.params.refugee_id,
+        req.body,
+        {
+            //pass the new object to cb function
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, refugee) {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
         res.json(refugee);
     });
 };
