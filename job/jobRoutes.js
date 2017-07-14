@@ -2,7 +2,7 @@ module.exports = jobRoutes;
 
 function jobRoutes(passport) {
 
-    var jobRoutesController = require('./jobController');
+    var jobController = require('./jobController');
     var router = require('express').Router();
     var unless = require('express-unless')
 
@@ -12,7 +12,13 @@ function jobRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
-    router.get('/', jobRoutesController.list);
+    router.get('/', jobController.getJobs);
+    router.post('/', jobController.addJob);
+
+    router.route('/:job_id')
+        .get(jobController.getJob)
+        .put(jobController.putJob)
+        .delete(jobController.deleteJob())
 
     return router;
 }
