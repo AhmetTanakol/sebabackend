@@ -13,5 +13,7 @@ function educationRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+	router.route('/:refugee_id').get(educationRoutesController.getEducationsByRefugeeId);
+	
     return router;
 }
