@@ -31,7 +31,7 @@ module.exports.putRefugee = function(req, res) {
             runValidators: true
         }, function (err, refugee) {
         if (err) {
-            res.status(500).send(err);
+            res.status(500).send(refugee_id);
             return;
         }
         res.json(refugee);
@@ -121,4 +121,19 @@ module.exports.findRefugees = function (req, res) {
     }
     res.status(200).json(refugees);
   });
+};
+
+module.exports.updateResume = function (req, res) {
+	
+	var myresume = req.body.params.refugee;
+	var myquery = { _id: req.body.params.refugee._id };
+	delete myresume._id;
+	Refugee.updateOne(myquery, myresume, function(err, result) {
+		if (err) {
+          res.status(500).send(err);
+          return;
+        }
+		
+        res.status(200).send({'status' : 'successful'});	
+	});
 };
