@@ -32,7 +32,8 @@ var refugeeSchema = new mongoose.Schema({
     type: Date
   },
   placeOfBirth: {
-    type: String
+    type: String,
+    ref: 'Country'
   },
   maritalStatus: {
     type: String

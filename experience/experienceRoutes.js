@@ -12,6 +12,8 @@ function experienceRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
+	
+	router.route('/:refugee_id').get(experienceRoutesController.getExperiencesByRefugeeId);
 
     return router;
 }

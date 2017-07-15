@@ -1,8 +1,8 @@
-module.exports = educationRoutes;
+module.exports = countryRoutes;
 
-function educationRoutes(passport) {
+function countryRoutes(passport) {
 
-    var educationRoutesController = require('./educationController');
+    var countryRoutesController = require('./countryController');
     var router = require('express').Router();
     var unless = require('express-unless')
 
@@ -13,7 +13,7 @@ function educationRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
-	router.route('/:refugee_id').get(educationRoutesController.getEducationsByRefugeeId);
-	
+    router.get('/', countryRoutesController.list);
+
     return router;
 }
