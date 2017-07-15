@@ -37,8 +37,13 @@ module.exports.addJob = function (req, res) {
     job.applicants = [];
 
     //todo skills via datenbank im front oder backend
-    job.skills = req.body.skills;
+    var skills = req.body.skills;
+    /*var skillIds = [];
 
+    forEachOf(job.skills, function(skill){
+        skillIds.ad(skill._id);
+    })
+    job.skills = skillIds;*/
     /*
     todo check if user is user in data?
     req.user == req.body.user
