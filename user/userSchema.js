@@ -21,7 +21,7 @@ var userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  username: {
+  email: {
     type: String,
     required: true,
     unique: true
@@ -31,7 +31,8 @@ var userSchema = new mongoose.Schema({
     required: true
   },
   type: {
-    type: String
+    type: String,
+    required: true
   },
   refugee: {
     type: String,
