@@ -21,4 +21,5 @@ Config.app.port = process.env.PORT || 3000;
 
 Config.auth.jwtSecret = "justsome other text than before";
 
+Config.mongouri = 'mongodb://dbAdmin:onlythedatabaseinscope@pcjc5ikfd431jnvz.myfritz.net:60420/WorkForceDB';
 module.exports = Config;
