@@ -61,7 +61,7 @@ module.exports.matchWithRefugee = function (req, res) {
       var newMatch = new Match({
         company: req.body.params.user.company,
         refugee: req.body.params.refugee._id,
-        job: req.body.params.job._id,
+        job: req.body.params.job,
         isAddedByCompany: true
       });
       newMatch.save(function (saveError) {
