@@ -6,6 +6,11 @@ var _ = require('lodash');
 var moment = require('moment');
 
 module.exports.findRefugees = function (req, res) {
+  if(!req.query.job) {
+    var jobNotFound = new Error('Job field is missing');
+    res.status(400).send(jobNotFound);
+    return;
+  }
   async.seq(
     function(cb) {
       var refugeeQuery = {};

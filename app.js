@@ -3,11 +3,7 @@ var Config = require('./config/config');
  * db connect
  */
 var mongoose = require('mongoose');
-mongoose.connect([Config.db.host, '/', Config.db.name].join(''),{
-    //eventually it's a good idea to make this secure
-    user: Config.db.user,
-    pass: Config.db.pass
-});
+mongoose.connect(Config.mongouri);
 /**
  * create application
  */
