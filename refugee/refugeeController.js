@@ -137,3 +137,18 @@ module.exports.updateResume = function (req, res) {
         res.status(200).send({'status' : 'successful'});	
 	});
 };
+
+// Create endpoint /api/refugee/refugees for POST
+module.exports.getRefugees = function(req, res) {
+	
+    // Use the Refugee model to find refugees in array
+	var myquery = { _id: { $in: req.body.params.refugee_ids } };
+    Refugee.find(myquery, function(err, refugees) {
+        if (err) {
+            res.status(500).send(err)
+            return;
+        };
+
+        res.json(refugees);
+    });
+};
