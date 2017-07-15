@@ -5,6 +5,39 @@ var async = require('async');
 var _ = require('lodash');
 var moment = require('moment');
 
+// Create endpoint /api/refugee/:refugee_id for GET
+module.exports.getRefugee = function(req, res) {
+    // Use the Refugee model to find a specific refugee
+    Refugee.findById(req.params.refugee_id, function(err, refugee) {
+        if (err) {
+            res.status(500).send(err)
+            return;
+        };
+
+        res.json(refugee);
+    });
+};
+
+// Create endpoint /api/refugee/:refugee_id for PUT
+module.exports.putRefugee = function(req, res) {
+    // Use the Refugee model to find a specific refugee and update it
+    Refugee.findByIdAndUpdate(
+        req.params.refugee_id,
+        req.body,
+        {
+            //pass the new object to cb function
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, refugee) {
+        if (err) {
+            res.status(500).send(refugee_id);
+            return;
+        }
+        res.json(refugee);
+    });
+};
+
 module.exports.findRefugees = function (req, res) {
   if(!req.query.job) {
     var jobNotFound = new Error('Job field is missing');
@@ -93,4 +126,19 @@ module.exports.findRefugees = function (req, res) {
     }
     res.status(200).json(refugees);
   });
+};
+
+module.exports.updateResume = function (req, res) {
+	
+	var myresume = req.body.params.refugee;
+	var myquery = { _id: req.body.params.refugee._id };
+	delete myresume._id;
+	Refugee.updateOne(myquery, myresume, function(err, result) {
+		if (err) {
+          res.status(500).send(err);
+          return;
+        }
+		
+        res.status(200).send({'status' : 'successful'});	
+	});
 };

@@ -13,7 +13,12 @@ function refugeeRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+	router.post('/updateResume', refugeeRoutesController.updateResume);
     router.get('/findRefugees', refugeeRoutesController.findRefugees);
-
+	
+	router.route('/:refugee_id')
+        .get(refugeeRoutesController.getRefugee)
+        .put(refugeeRoutesController.putRefugee);
+	
     return router;
 }

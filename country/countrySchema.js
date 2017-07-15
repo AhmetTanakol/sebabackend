@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var shortId = require('shortid');
 
-var languageSchema = new mongoose.Schema({
+var countrySchema = new mongoose.Schema({
   _id: {
     type: String,
     unique: true,
@@ -24,7 +24,7 @@ var languageSchema = new mongoose.Schema({
   }
 });
 
-languageSchema.pre('save', function (next) {
+countrySchema.pre('save', function (next) {
   var self = this;
   if (self.updatedAt) {
     self.updatedAt = new Date();
@@ -33,6 +33,6 @@ languageSchema.pre('save', function (next) {
   return;
 });
 
-var Language = mongoose.model('Language', languageSchema);
+var Country = mongoose.model('Country', countrySchema);
 
-module.exports = Language;
+module.exports = Country;
