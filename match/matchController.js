@@ -73,3 +73,37 @@ module.exports.matchWithRefugee = function (req, res) {
       });
     });
 };
+
+// Create endpoint /api/match/getMatchedJobsAtRefugee/:refugee_id for GET
+module.exports.getMatchedJobsAtRefugee = function(req, res) {
+    // Use the Match model to find a specific job match based on refugee_id
+	var myquery = { 
+		refugee: req.params.refugee_id, 
+		isAddedByCompany : true,
+		isAddedByRefugee : true
+	}
+    Match.find(myquery, function(err, jobs) {
+        if (err) {
+            res.status(500).send(err)
+            return;
+        };
+        res.json(jobs);
+    });
+};
+
+// Create endpoint /api/match/getMatchedJobsAtRefugee/:refugee_id for GET
+module.exports.getMatchedJobsAtCompany = function(req, res) {
+    // Use the Match model to find a specific candidate match based on company_id
+	var myquery = { 
+		company: req.params.company_id, 
+		isAddedByCompany : true,
+		isAddedByRefugee : true
+	}
+    Match.find(myquery, function(err, candidate) {
+        if (err) {
+            res.status(500).send(err)
+            return;
+        };
+        res.json(candidate);
+    });
+};
