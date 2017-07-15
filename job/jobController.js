@@ -132,6 +132,7 @@ function getCompanyFromUser(userId) {
                 res.status(500).send(error);
                 return;
             }
+            console.log(user);
             return user.company['_id']
         })
 }
