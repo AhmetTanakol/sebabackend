@@ -28,7 +28,6 @@ module.exports.addJob = function (req, res) {
         res.status(400).send('skills required');
         return;
     }
-
     var job = new Job();
 
     job.title = req.body.title;
@@ -48,15 +47,6 @@ module.exports.addJob = function (req, res) {
         res.sendStatus(401);
     }
 
-    User
-        .findOne({_id: userId})
-        .exec(function (err, user) {
-            if (err) {
-                res.status(500).send(error);
-                return;
-            }
-            return user.company['_id']
-        })
 
     User.findOne({_id: req.user})
         .exec(function (err, requestingUser) {
@@ -65,7 +55,7 @@ module.exports.addJob = function (req, res) {
                 return;
             }
             if (requestingUser) {
-                job.company = requestingUser.company['_id']
+                job.company = requestingUser.company
                 job.save(function (err, newJob) {
                     if (err) {
                         res.status(500).send(err);
@@ -110,15 +100,19 @@ module.exports.putJob = function (req, res) {
             errorcheck(err);
             res.json(job);
         });
-};
+}
 
 module.exports.deleteJob = function (req, res) {
-    Job.findByIdAndRemove(req.params.job_id)
+    Job
+        .findById(req.param.job_id)
         .exec(function (err, job) {
             errorcheck(err);
+            job.remove();
             res.sendStatus(200);
         })
 }
+
+
 function errorcheck(err){
     if (err) {
         res.status(500).send(error);

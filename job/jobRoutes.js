@@ -18,7 +18,7 @@ function jobRoutes(passport) {
     router.route('/:job_id')
         .get(jobController.getJob)
         .put(jobController.putJob)
-        .delete(jobController.deleteJob())
+        .delete(jobController.deleteJob)
 
     return router;
 }
