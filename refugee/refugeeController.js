@@ -1,5 +1,6 @@
 var Refugee = require('./refugeeSchema');
 var Match = require('./../match/matchSchema');
+var Education = require('./../education/educationSchema');
 
 var async = require('async');
 var _ = require('lodash');
@@ -130,16 +131,46 @@ module.exports.findRefugees = function (req, res) {
 
 module.exports.updateResume = function (req, res) {
 	
-	var myresume = req.body.params.refugee;
+	var myresume = req.body.params.refugee;	
 	var myquery = { _id: req.body.params.refugee._id };
 	delete myresume._id;
+			
 	Refugee.updateOne(myquery, myresume, function(err, result) {
 		if (err) {
           res.status(500).send(err);
           return;
         }
+
+		// delete educations if available
+		Education.deleteMany({ refugee : req.body.params.refugee._id }, function(errd, resd) {
+			if (errd) {
+				res.status(500).send(err);
+				return;
+			}
+			
+			// create educations if available	
+			for (var i=0; i<req.body.params.education.length; i++) {
+				var myeducation = req.body.params.education[i];
+				var newEducation = new Education(myeducation);
+				console.log(myeducation);
+				newEducation.save(function(saveError,createdEdu) {
+					if (saveError) {
+					  res.status(500).send(saveError);
+					  return;
+					}
+					myresume.education.push(createdEdu._id);
+				});
+			}
+		});
 		
-        res.status(200).send({'status' : 'successful'});	
+		// delete experiences if available
+		// create experiences if available
+		
+		// delete experiences if available
+		// create certificates if available
+
+		
+        res.status(200).send({'status' : 'successful'});
 	});
 };
 
