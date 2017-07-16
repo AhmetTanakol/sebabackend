@@ -69,11 +69,9 @@ module.exports.addJob = function (req, res) {
         })
 
     }
-module.exports.getJobs = function (req, res) {
-    console.dir(req);
-    console.log(req.user);
+module.exports.getJobsForUser = function (req, res) {
     Job
-        .find({company: getCompanyFromUser(req.user)})
+        .find({company: getCompanyFromUser(req.params.user_id)})
         .exec(function(err, jobs) {
             if(err){
                 res.status(500).send(err);
@@ -164,6 +162,12 @@ function errorcheck(err){
         return;
     }
 }
+
+
+
+
+
+
 function getCompanyFromUser(userId) {
     User
         .findOne({_id: userId})
@@ -178,6 +182,14 @@ function getCompanyFromUser(userId) {
             }
         })
 }
+
+
+
+
+
+
+
+
 
 
 // Create endpoint /api/job/jobs for POST

@@ -12,13 +12,15 @@ function jobRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
-    router.get('/', jobController.getJobs);
+    // router.get('/', jobController.getJoblist);
     router.post('/', jobController.addJob);
 
     router.route('/:job_id')
         .get(jobController.getJob)
         .put(jobController.putJob)
         .delete(jobController.deleteJob)
+
+    router.route('/getJobsForUser/:user_id').get(jobController.getJobsForUser)
 
     return router;
 }
