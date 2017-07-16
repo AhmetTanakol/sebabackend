@@ -70,6 +70,8 @@ module.exports.addJob = function (req, res) {
 
     }
 module.exports.getJobs = function (req, res) {
+    console.dir(req);
+    console.log(req.user);
     Job
         .find({company: getCompanyFromUser(req.user)})
         .exec(function(err, jobs) {
@@ -167,10 +169,13 @@ function getCompanyFromUser(userId) {
         .findOne({_id: userId})
         .exec(function (err, user) {
             if (err) {
-                res.status(500).send(error);
+                console.log(err);
+                res.status(500).send(err);
                 return;
+            } else {
+                console.dir(user);
+                return user.company['_id']
             }
-            return user.company['_id']
         })
 }
 
