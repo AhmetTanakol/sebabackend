@@ -1,32 +1,41 @@
 {
   "name": "sebaproject-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "webpack-watch-server"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/AhmetTanakol/sebabackend"
+    "url": "git+https://github.com/AhmetTanakol/sebabackend.git"
   },
   "dependencies": {
     "async": "^2.5.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.0",
+    "chance": "^1.0.10",
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "express-unless": "^0.3.0",
     "jwt-simple": "^0.5.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
-    "mongoose": "^4.10.8",
+    "mongoose": "4.10.6",
     "mongoose-schema-extend": "^0.2.2",
     "passport": "^0.3.2",
     "passport-jwt": "^2.0.0",
     "shortid": "^2.2.8",
     "supertest": "^1.2.0"
   },
-  "devDependencies": {}
+  "bugs": {
+    "url": "https://github.com/AhmetTanakol/sebabackend/issues"
+  },
+  "homepage": "https://github.com/AhmetTanakol/sebabackend#readme",
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

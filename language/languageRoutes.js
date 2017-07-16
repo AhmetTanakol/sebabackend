@@ -12,6 +12,8 @@ function languageRoutes(passport) {
 
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
+	
+	router.get('/', languageRoutesController.list);
 
     return router;
 }

@@ -8,12 +8,10 @@ module.exports.login = function(req, res){
 
     if(!req.body.email){
         res.status(400).send('email required');
-        console.log('email required');
         return;
     }
     if(!req.body.password){
         res.status(400).send('password required');
-        console.log('password required')
         return;
     }
 
@@ -47,6 +45,11 @@ module.exports.signup = function(req, res){
         res.status(400).send('password required');
         return;
     }
+    if(!req.body.name){
+      res.status(400).send('name required');
+      return;
+    }
+
 
     var user = new User();
 
@@ -61,8 +64,13 @@ module.exports.signup = function(req, res){
         }
         if (user.type === 'refugee') {
           var newRefugee = new Refugee({
-            user: newUser
+            user: newUser,
+            email: req.body.email,
+            name: req.body.name
           });
+          if (req.body.phone) {
+            newRefugee.phone = req.body.phone;
+          }
           newRefugee.save(function(saveError,createdRefugee) {
             if (saveError) {
               res.status(500).send(saveError);
@@ -74,8 +82,13 @@ module.exports.signup = function(req, res){
           });
         } else {
           var newCompany = new Company({
-            user: newUser
+            user: newUser,
+            email: req.body.email,
+            name: req.body.name
           });
+          if (req.body.phone) {
+            newCompany.phone = req.body.phone;
+          }
           newCompany.save(function(saveError,createdCompany) {
             if (saveError) {
               res.status(500).send(saveError);
