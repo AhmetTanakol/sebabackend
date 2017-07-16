@@ -18,6 +18,26 @@ exports.getCompany = function(req, res) {
     });
 };
 
+// Create endpoint /api/companys/:company_id for PUT
+exports.putCompany = function(req, res) {
+    // Use the Company model to find a specific company and update it
+    Company.findByIdAndUpdate(
+        req.params.company_id,
+        req.body,
+        {
+            //pass the new object to cb function
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, company) {
+        if (err) {
+            res.status(500).send(err);
+            return;
+        }
+        res.json(company);
+    });
+};
+
 
 module.exports.findCompanies = function(req, res) {
   async.seq(
