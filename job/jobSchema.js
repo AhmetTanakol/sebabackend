@@ -44,12 +44,18 @@ var jobSchema = new mongoose.Schema({
     ]
   },
   skills: {
-    type: [
-      {
-        type: String,
-        ref: 'Skill'
-      }
-    ]
+      type: [
+          {
+              name: {
+                  type: String,
+                  ref: 'Skill'
+              },
+              power: {
+                  type: Number
+              },
+              _id: false
+          }
+      ]
   }
 });
 
