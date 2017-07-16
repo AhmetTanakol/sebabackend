@@ -1,11 +1,13 @@
 var Config = require('../config/config.js');
 var User = require('./userSchema');
+var Refugee = require('./../refugee/refugeeSchema');
+var Company = require('./../company/companySchema');
 var jwt = require('jwt-simple');
 
 module.exports.login = function(req, res){
 
-    if(!req.body.username){
-        res.status(400).send('username required');
+    if(!req.body.email){
+        res.status(400).send('email required');
         return;
     }
     if(!req.body.password){
@@ -13,7 +15,7 @@ module.exports.login = function(req, res){
         return;
     }
 
-    User.findOne({username: req.body.username}, function(err, user){
+    User.findOne({email: req.body.email}, function(err, user){
         if (err) {
             res.status(500).send(err);
             return
@@ -35,27 +37,68 @@ module.exports.login = function(req, res){
 };
 
 module.exports.signup = function(req, res){
-    if(!req.body.username){
-        res.status(400).send('username required');
+    if(!req.body.email){
+        res.status(400).send('email required');
         return;
     }
     if(!req.body.password){
         res.status(400).send('password required');
         return;
     }
+    if(!req.body.name){
+      res.status(400).send('name required');
+      return;
+    }
+
 
     var user = new User();
 
-    user.username = req.body.username;
+    user.email = req.body.email;
     user.password = req.body.password;
+    user.type = req.body.type;
 
-    user.save(function(err) {
+    user.save(function(err, newUser) {
         if (err) {
             res.status(500).send(err);
             return;
         }
-
-        res.status(201).json({token: createToken(user)});
+        if (user.type === 'refugee') {
+          var newRefugee = new Refugee({
+            user: newUser,
+            email: req.body.email,
+            name: req.body.name
+          });
+          if (req.body.phone) {
+            newRefugee.phone = req.body.phone;
+          }
+          newRefugee.save(function(saveError,createdRefugee) {
+            if (saveError) {
+              res.status(500).send(saveError);
+              return;
+            }
+            user.refugee = createdRefugee._id;
+            user.save();
+            res.status(201).json({token: createToken(user)});
+          });
+        } else {
+          var newCompany = new Company({
+            user: newUser,
+            email: req.body.email,
+            name: req.body.name
+          });
+          if (req.body.phone) {
+            newCompany.phone = req.body.phone;
+          }
+          newCompany.save(function(saveError,createdCompany) {
+            if (saveError) {
+              res.status(500).send(saveError);
+              return;
+            }
+            user.company = createdCompany._id;
+            user.save();
+            res.status(201).json({token: createToken(user)});
+          });
+        }
     });
 };
 
@@ -84,9 +127,14 @@ function createToken(user) {
     var tokenPayload = {
         user: {
             _id: user._id,
-            username: user.username
+            email: user.email,
+            type: user.type
         }
-
     };
+    if (user.type === 'refugee') {
+      tokenPayload.user.refugee = user.refugee;
+    } else {
+      tokenPayload.user.company = user.company;
+    }
     return jwt.encode(tokenPayload,Config.auth.jwtSecret);
 };
