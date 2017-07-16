@@ -133,45 +133,51 @@ module.exports.updateResume = function (req, res) {
 	
 	var myresume = req.body.params.refugee;	
 	var myquery = { _id: req.body.params.refugee._id };
-	delete myresume._id;
-			
+	delete myresume._id;		
+		
+	// create educations if available	
+	var retainEducation = [];
+	myresume.education = [];
+	for (var i=0; i<req.body.params.education.length; i++) {
+		var myeducation = req.body.params.education[i];			
+		// check if there is _id then just change isDeleted to false it, if no then means new one			
+		if (myeducation.hasOwnProperty("_id")) {
+			retainEducation.push(myeducation._id);
+			myresume.education.push(myeducation._id);
+		} else {
+			var newEducation = new Education(myeducation);
+			//console.log(myeducation);
+			newEducation.save(function(saveError,createdEdu) {
+				if (saveError) {
+				  res.status(500).send(saveError);
+				  return;
+				}
+				myresume.education.push(createdEdu._id);
+			});
+		}
+	}
+	//console.log(retainEducation);
+
+	// delete educations if available and not in retain
+	Education.updateMany(
+		{ refugee : req.body.params.refugee._id, _id: { $nin: retainEducation } },
+		{ $set: { "isDeleted" : true } }
+	);
+	
+	// create experiences if available
+	// delete experiences if available and not in retain	
+	
+	// create certificates if available
+	// delete certificates if available and not in retain
+	
 	Refugee.updateOne(myquery, myresume, function(err, result) {
 		if (err) {
           res.status(500).send(err);
           return;
-        }
-
-		// delete educations if available
-		Education.deleteMany({ refugee : req.body.params.refugee._id }, function(errd, resd) {
-			if (errd) {
-				res.status(500).send(err);
-				return;
-			}
-			
-			// create educations if available	
-			for (var i=0; i<req.body.params.education.length; i++) {
-				var myeducation = req.body.params.education[i];
-				var newEducation = new Education(myeducation);
-				console.log(myeducation);
-				newEducation.save(function(saveError,createdEdu) {
-					if (saveError) {
-					  res.status(500).send(saveError);
-					  return;
-					}
-					myresume.education.push(createdEdu._id);
-				});
-			}
-		});
-		
-		// delete experiences if available
-		// create experiences if available
-		
-		// delete experiences if available
-		// create certificates if available
-
-		
+        }		
         res.status(200).send({'status' : 'successful'});
 	});
+	
 };
 
 // Create endpoint /api/refugee/refugees for POST
