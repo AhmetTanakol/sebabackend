@@ -180,3 +180,17 @@ function getCompanyFromUser(userId) {
 }
 
 
+// Create endpoint /api/job/jobs for POST
+module.exports.getJobs = function(req, res) {
+	
+    // Use the Job model to find jobs in array
+	var myquery = { _id: { $in: req.body.params.job_ids } };
+    Job.find(myquery, function(err, jobs) {
+        if (err) {
+            res.status(500).send(err)
+            return;
+        };
+
+        res.json(jobs);
+    });
+};

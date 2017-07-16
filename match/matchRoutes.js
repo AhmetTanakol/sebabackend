@@ -16,5 +16,8 @@ function matchRoutes(passport) {
     router.post('/matchWithRefugee', matchRoutesController.matchWithRefugee);
     router.post('/matchWithCompany', matchRoutesController.matchWithCompany);
 
+	router.route('/getMatchedJobsAtRefugee/:refugee_id').get(matchRoutesController.getMatchedJobsAtRefugee);
+	router.route('/getMatchedJobsAtCompany/:company_id').get(matchRoutesController.getMatchedJobsAtCompany);
+	
     return router;
 }
