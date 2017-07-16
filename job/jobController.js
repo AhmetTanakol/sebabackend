@@ -81,30 +81,44 @@ module.exports.getJobs = function (req, res) {
     })
 }
 
+function getSkillNameList(inputSkills, cb) {
+    var skillsWithName =[];
+    for (var i = 0, len = inputSkills.length; i < len; i++){
+        Skill.find({_id: inputSkills[i].name})
+            .exec(function (err, skill){
+                errorcheck(err);
+                console.log('found skill: '+skill);
+                skillsWithName.push({
+                    _id: skill._id,
+                    name: skill.name,
+                    power: inputSkills[i]['power']
+                })
+            });
+    }
+    if(skillsWithName.length == inputSkills.length) {
+        if(typeof cb == "function") {
+            cb(skillsWithName);
+        }
+        console.log("setting Skilllist: done");
+    } else {
+        
+        console.log("Skilllst: length mistmach");
+    }
+}
+
 // Create endpoint /api/jobs/:job_id for GET
 module.exports.getJob = function (req, res) {
     Job
         .findById(req.params.job_id)
         .exec(function (err, job) {
             errorcheck(err);
-            var skillswithname =[];
-            console.log('!!!!!!!!!skill 0 of job'+job.skills[0])
-            for (var i = 0, len = job.skills.length; i < len; i++){
-                Skill.find({_id: job.skills[i].name})
-                    .exec(function (err, skill){
-                        errorcheck(err);
-                        console.log('found skill: '+skill);
-                        skillswithname.add({
-                            _id: skill._id,
-                            name: skill.name,
-                            power: ['power']
-                        })
-                    });
-            }
-            job.skills = skillswithname;
+            getSkillNameList( job.skills , function (skillsWithName) {
+                    job.skills = skillsWithName;
+                    console.log('job which will be returend: '+job);
+                    res.status(201).json(job);
+                }
+            );
 
-            console.log(job);
-            res.status(201).json(job);
         })
 }
 
