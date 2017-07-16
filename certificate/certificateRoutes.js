@@ -13,5 +13,7 @@ function certificateRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
+	router.route('/:refugee_id').get(certificateRoutesController.getCertificatesByRefugeeId);
+	
     return router;
 }
