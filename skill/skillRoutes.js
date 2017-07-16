@@ -2,7 +2,7 @@ module.exports = skillRoutes;
 
 function skillRoutes(passport) {
 
-    var skillRoutesController = require('./skillController');
+    var skillController = require('./skillController');
     var router = require('express').Router();
     var unless = require('express-unless')
 
@@ -13,7 +13,10 @@ function skillRoutes(passport) {
     //middleware
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
-    router.get('/', skillRoutesController.list);
-
+    router.route('/')
+        .get( skillController.list)
+        // .post( skillController.addSkill);
+    router.route('/:skill_id')
+        .get(skillController.getSkill)
     return router;
 }
