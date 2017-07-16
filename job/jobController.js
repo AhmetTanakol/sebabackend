@@ -1,6 +1,7 @@
 var Job = require('./jobSchema');
 var User = require('./../user/userSchema');
 var Company = require('./../company/companySchema');
+var Skill = require('./../skill/skillSchema');
 
 
 module.exports.addJob = function (req, res) {
@@ -30,24 +31,20 @@ module.exports.addJob = function (req, res) {
     }
     var job = new Job();
 
+
     job.title = req.body.title;
     job.description = req.body.description;
     job.startDate = req.body.startDate;
     job.endDate = req.body.endDate;
     job.applicants = [];
 
-    //todo skills via datenbank im front oder backend
     var skills = req.body.skills;
-    /*var skillIds = [];
-
-    forEachOf(job.skills, function(skill){
-        skillIds.ad(skill._id);
-    })
-    job.skills = skillIds;*/
-    /*
-    todo check if user is user in data?
-    req.user == req.body.user
-    */
+    for (var i = 0, len = skills.length; i < len; i++){
+        job.skills.push({
+                name: skills[i]._id,
+                power: skills[i].power
+            });
+    }
     if (!req.user.equals(req.body.user)) {
         res.sendStatus(401);
     }
@@ -90,6 +87,23 @@ module.exports.getJob = function (req, res) {
         .findById(req.params.job_id)
         .exec(function (err, job) {
             errorcheck(err);
+            var skillswithname =[];
+            console.log('!!!!!!!!!skill 0 of job'+job.skills[0])
+            for (var i = 0, len = job.skills.length; i < len; i++){
+                Skill.find({_id: job.skills[i].name})
+                    .exec(function (err, skill){
+                        errorcheck(err);
+                        console.log('found skill: '+skill);
+                        skillswithname.add({
+                            _id: skill._id,
+                            name: skill.name,
+                            power: ['power']
+                        })
+                    });
+            }
+            job.skills = skillswithname;
+
+            console.log(job);
             res.status(201).json(job);
         })
 }
@@ -132,7 +146,6 @@ function getCompanyFromUser(userId) {
                 res.status(500).send(error);
                 return;
             }
-            console.log(user);
             return user.company['_id']
         })
 }
