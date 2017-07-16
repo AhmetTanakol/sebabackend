@@ -2,7 +2,7 @@ var Job = require('./jobSchema');
 var User = require('./../user/userSchema');
 var Company = require('./../company/companySchema');
 var Skill = require('./../skill/skillSchema');
-
+var async = require('async')
 
 module.exports.addJob = function (req, res) {
     if(!req.body.user){
@@ -83,27 +83,36 @@ module.exports.getJobs = function (req, res) {
 
 function getSkillNameList(inputSkills, cb) {
     var skillsWithName =[];
-    for (var i = 0, len = inputSkills.length; i < len; i++){
-        Skill.find({_id: inputSkills[i].name})
-            .exec(function (err, skill){
+    async.each(inputSkills,function (inSkill, callback) {
+        Skill.findOne({_id: inSkill.name})
+            .exec(function (err, dbSkill){
                 errorcheck(err);
-                console.log('found skill: '+skill);
-                skillsWithName.push({
-                    _id: skill._id,
-                    name: skill.name,
-                    power: inputSkills[i]['power']
-                })
+                var newSkill = {
+                    _id: dbSkill['_id'],
+                    name: dbSkill['name'],
+                    power: inSkill['power']
+                };
+                skillsWithName.push(newSkill);
+                callback()
             });
-    }
-    if(skillsWithName.length == inputSkills.length) {
-        if(typeof cb == "function") {
-            cb(skillsWithName);
+        }, function (err) {
+            if (err) {
+                console.log('Error Building SkillList: '+err);
+            } else {
+                if(skillsWithName.length == inputSkills.length) {
+                    console.log("setting Skilllist: done "+skillsWithName);
+                    if(typeof cb == "function") {
+                        cb(skillsWithName);
+                    }
+                } else {
+
+                    console.log("Skilllst: length mistmach");
+                }
+            }
         }
-        console.log("setting Skilllist: done");
-    } else {
-        
-        console.log("Skilllst: length mistmach");
-    }
+
+
+    );
 }
 
 // Create endpoint /api/jobs/:job_id for GET
@@ -111,6 +120,7 @@ module.exports.getJob = function (req, res) {
     Job
         .findById(req.params.job_id)
         .exec(function (err, job) {
+            console.log('processing job :'+job.title);
             errorcheck(err);
             getSkillNameList( job.skills , function (skillsWithName) {
                     job.skills = skillsWithName;
