@@ -13,4 +13,18 @@ module.exports.list = function(req, res) {
     });
 };
 
+module.exports.getSkill = function (req, res) {
+    Skill
+        .findById(req.params.skill_id)
+        .exec(function (err, skill) {
+            errorcheck(err);
+            res.status(201).json(skill);
+        })
+}
 
+function errorcheck(err){
+    if (err) {
+        res.status(500).send(error);
+        return;
+    }
+}

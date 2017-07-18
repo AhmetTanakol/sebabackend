@@ -14,6 +14,9 @@ function companyRoutes(passport) {
     router.use(mw.unless({method: ['GET', 'OPTIONS']}));
 
     router.get('/findCompanies', companyRoutesController.findCompanies);
+    // zabir edit to get a company info
+    router.get('/:company_id', companyRoutesController.getCompany);
+    router.put('/:company_id', companyRoutesController.putCompany);
 
     return router;
 }
