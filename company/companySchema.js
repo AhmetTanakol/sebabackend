@@ -25,7 +25,10 @@ var companySchema = new mongoose.Schema({
   info: {
     type: String
   },
-  image: {
+  photo: {
+    type: String
+  },
+  video: {
     type: String
   },
   email: {

@@ -5,12 +5,17 @@ var Match = require('./../match/matchSchema');
 var async = require('async');
 var _ = require('lodash');
 
+var updateFields = ['email', 'photo', 'industry', 'info', 'isDeleted', 'location', 'name', 'phone', 'video'];
+
 // Create endpoint /api/companys/:company_id for GET
 exports.getCompany = function(req, res) {
     // Use the Company model to find a specific company
-    Company.findById(req.params.company_id, function(err, company) {
+    Company
+      .findOne({ _id: req.params.company_id })
+      .populate('location industry')
+      .exec(function(err, company) {
         if (err) {
-            res.status(500).send(err)
+            res.status(500).send(err);
             return;
         };
 
@@ -21,21 +26,29 @@ exports.getCompany = function(req, res) {
 // Create endpoint /api/companys/:company_id for PUT
 exports.putCompany = function(req, res) {
     // Use the Company model to find a specific company and update it
-    Company.findByIdAndUpdate(
-        req.params.company_id,
-        req.body,
-        {
-            //pass the new object to cb function
-            new: true,
-            //run validations
-            runValidators: true
-        }, function (err, company) {
-        if (err) {
-            res.status(500).send(err);
-            return;
-        }
-        res.json(company);
+    req.body.location = _.map(req.body.location, function(location) {
+      return location._id;
     });
+    req.body.industry = _.map(req.body.industry, function(industry) {
+      return industry._id;
+    });
+    var updatedFields = _.pick(req.body, updateFields);
+    Company
+      .findOne({ _id: req.body._id })
+      .exec(function (err, company) {
+        if (err) {
+          res.status(500).send(err);
+          return;
+        }
+        _.assign(company, updatedFields);
+        company.save(function (errSave) {
+          if (errSave) {
+            res.status(500).send(errSave);
+            return;
+          }
+          res.status(200).json({'status': 'successful'});
+        });
+      });
 };
 
 
