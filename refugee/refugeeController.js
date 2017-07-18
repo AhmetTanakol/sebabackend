@@ -113,9 +113,13 @@ module.exports.findRefugees = function (req, res) {
             return;
           }
           if (!_.isEmpty(matches)) {
-            filteredRefugees = _.flatten(_.map(matches, function(match) {
-              return _.filter(refugees, match.refugee);
-            }));
+            _.each(matches, function(match) {
+              _.each(refugees, function(refugee) {
+                if (refugee._id !== match.refugee) {
+                  filteredRefugees.push(refugee);
+                }
+              });
+            });
           } else {
             filteredRefugees = refugees;
           }
@@ -132,17 +136,17 @@ module.exports.findRefugees = function (req, res) {
 };
 
 module.exports.updateResume = function (req, res) {
-	
-	var myresume = req.body.params.refugee;	
+
+	var myresume = req.body.params.refugee;
 	var myquery = { _id: req.body.params.refugee._id };
-	delete myresume._id;		
-		
-	// create educations if available	
+	delete myresume._id;
+
+	// create educations if available
 	var retainEducation = [];
 	myresume.education = [];
 	for (var i=0; i<req.body.params.education.length; i++) {
-		var myeducation = req.body.params.education[i];			
-		// check if there is _id then just change isDeleted to false it, if no then means new one			
+		var myeducation = req.body.params.education[i];
+		// check if there is _id then just change isDeleted to false it, if no then means new one
 		if (myeducation.hasOwnProperty("_id")) {
 			retainEducation.push(myeducation._id);
 			myresume.education.push(myeducation._id);
@@ -165,13 +169,13 @@ module.exports.updateResume = function (req, res) {
 		{ refugee : req.body.params.refugee._id, _id: { $nin: retainEducation } },
 		{ $set: { "isDeleted" : true } }
 	);
-	
+
 	// create experiences if available
 	var retainExperience = [];
 	myresume.experience = [];
 	for (var i=0; i<req.body.params.experience.length; i++) {
-		var myexperience = req.body.params.experience[i];			
-		// check if there is _id then just change isDeleted to false it, if no then means new one			
+		var myexperience = req.body.params.experience[i];
+		// check if there is _id then just change isDeleted to false it, if no then means new one
 		if (myexperience.hasOwnProperty("_id")) {
 			retainExperience.push(myexperience._id);
 			myresume.experience.push(myexperience._id);
@@ -187,18 +191,18 @@ module.exports.updateResume = function (req, res) {
 			});
 		}
 	}
-	// delete experiences if available and not in retain	
+	// delete experiences if available and not in retain
 	Experience.updateMany(
 		{ refugee : req.body.params.refugee._id, _id: { $nin: retainExperience } },
 		{ $set: { "isDeleted" : true } }
 	);
-	
+
 	// create certificates if available
 	var retainCertificate = [];
 	myresume.certificate = [];
 	for (var i=0; i<req.body.params.certificate.length; i++) {
-		var mycertificate = req.body.params.certificate[i];			
-		// check if there is _id then just change isDeleted to false it, if no then means new one			
+		var mycertificate = req.body.params.certificate[i];
+		// check if there is _id then just change isDeleted to false it, if no then means new one
 		if (mycertificate.hasOwnProperty("_id")) {
 			retainExperience.push(mycertificate._id);
 			myresume.certificate.push(mycertificate._id);
@@ -219,20 +223,20 @@ module.exports.updateResume = function (req, res) {
 		{ refugee : req.body.params.refugee._id, _id: { $nin: retainCertificate } },
 		{ $set: { "isDeleted" : true } }
 	);
-	
+
 	Refugee.updateOne(myquery, myresume, function(err, result) {
 		if (err) {
           res.status(500).send(err);
           return;
-        }		
+        }
         res.status(200).send({'status' : 'successful'});
 	});
-	
+
 };
 
 // Create endpoint /api/refugee/refugees for POST
 module.exports.getRefugees = function(req, res) {
-	
+
     // Use the Refugee model to find refugees in array
 	var myquery = { _id: { $in: req.body.params.refugee_ids } };
     Refugee.find(myquery, function(err, refugees) {
