@@ -136,8 +136,8 @@ module.exports.findRefugees = function (req, res) {
 };
 
 module.exports.updateResume = function (req, res) {
-
 	var myresume = req.body.params.refugee;
+  var refugee_id = req.body.params.refugee._id;
 	var myquery = { _id: req.body.params.refugee._id };
 	delete myresume._id;
 
@@ -152,7 +152,6 @@ module.exports.updateResume = function (req, res) {
 			myresume.education.push(myeducation._id);
 		} else {
 			var newEducation = new Education(myeducation);
-			//console.log(myeducation);
 			newEducation.save(function(saveError,createdEdu) {
 				if (saveError) {
 				  res.status(500).send(saveError);
@@ -162,14 +161,16 @@ module.exports.updateResume = function (req, res) {
 			});
 		}
 	}
-	//console.log(retainEducation);
 
 	// delete educations if available and not in retain
-	Education.updateMany(
-		{ refugee : req.body.params.refugee._id, _id: { $nin: retainEducation } },
-		{ $set: { "isDeleted" : true } }
-	);
-
+	var eduQuery = { refugee : refugee_id, _id: { $nin: retainEducation } };
+	var eduData = { $set : { "isDeleted" : true } };
+	Education.update(eduQuery, eduData, { multi: true }, function(errEd, resEd) {
+		if (errEd) {
+          res.status(500).send(errEd);
+          return;
+        }
+	});
 	// create experiences if available
 	var retainExperience = [];
 	myresume.experience = [];
@@ -181,7 +182,6 @@ module.exports.updateResume = function (req, res) {
 			myresume.experience.push(myexperience._id);
 		} else {
 			var newExperience = new Experience(myexperience);
-			//console.log(myexperience);
 			newExperience.save(function(saveError,createdExp) {
 				if (saveError) {
 				  res.status(500).send(saveError);
@@ -192,11 +192,14 @@ module.exports.updateResume = function (req, res) {
 		}
 	}
 	// delete experiences if available and not in retain
-	Experience.updateMany(
-		{ refugee : req.body.params.refugee._id, _id: { $nin: retainExperience } },
-		{ $set: { "isDeleted" : true } }
-	);
-
+	var expQuery = { refugee : refugee_id, _id: { $nin: retainExperience } };
+	var expData = { $set : { "isDeleted" : true } };
+	Experience.update(expQuery, expData, { multi: true }, function(errEx, resEx) {
+		if (errEx) {
+          res.status(500).send(errEx);
+          return;
+        }
+	});
 	// create certificates if available
 	var retainCertificate = [];
 	myresume.certificate = [];
@@ -204,11 +207,10 @@ module.exports.updateResume = function (req, res) {
 		var mycertificate = req.body.params.certificate[i];
 		// check if there is _id then just change isDeleted to false it, if no then means new one
 		if (mycertificate.hasOwnProperty("_id")) {
-			retainExperience.push(mycertificate._id);
+			retainCertificate.push(mycertificate._id);
 			myresume.certificate.push(mycertificate._id);
 		} else {
 			var newCertificate = new Certificate(mycertificate);
-			//console.log(mycertificate);
 			newCertificate.save(function(saveError,createdCert) {
 				if (saveError) {
 				  res.status(500).send(saveError);
@@ -218,12 +220,16 @@ module.exports.updateResume = function (req, res) {
 			});
 		}
 	}
-	// delete certificates if available and not in retain
-	Certificate.updateMany(
-		{ refugee : req.body.params.refugee._id, _id: { $nin: retainCertificate } },
-		{ $set: { "isDeleted" : true } }
-	);
 
+	// delete certificates if available and not in retain
+	var certQuery = { refugee : refugee_id, _id: { $nin: retainCertificate } };
+	var certData = { $set : { "isDeleted" : true } };
+	Certificate.update(certQuery, certData, { multi: true }, function(errCer, resCer) {
+		if (errCer) {
+          res.status(500).send(errCer);
+          return;
+        }
+	});
 	Refugee.updateOne(myquery, myresume, function(err, result) {
 		if (err) {
           res.status(500).send(err);
