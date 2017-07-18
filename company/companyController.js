@@ -51,7 +51,6 @@ exports.putCompany = function(req, res) {
       });
 };
 
-
 module.exports.findCompanies = function(req, res) {
   async.seq(
     function(cb) {

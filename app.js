@@ -41,6 +41,7 @@ var locationRoutes = require('./location/locationRoutes');
 var refugeeRoutes = require('./refugee/refugeeRoutes');
 var skillRoutes = require('./skill/skillRoutes');
 var countryRoutes = require('./country/countryRoutes');
+var wishlistRoutes = require('./wishlist/wishlistRoutes');
 //todo add routes here
 
 app.use('/api/user', userRoutes(passport));
@@ -56,5 +57,6 @@ app.use('/api/location', locationRoutes(passport));
 app.use('/api/refugee', refugeeRoutes(passport));
 app.use('/api/skill', skillRoutes(passport));
 app.use('/api/country', countryRoutes(passport));
+app.use('/api/wishlist', wishlistRoutes(passport));
 module.exports = app;
 

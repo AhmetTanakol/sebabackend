@@ -17,5 +17,6 @@ function companyRoutes(passport) {
     // zabir edit to get a company info
     router.get('/:company_id', companyRoutesController.getCompany);
     router.put('/:company_id', companyRoutesController.putCompany);
+
     return router;
 }
