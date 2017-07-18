@@ -16,6 +16,8 @@ function jobRoutes(passport) {
     router.post('/', jobController.addJob);
     router.get('/', jobController.list);
 
+	router.post('/getJobs', jobController.getJobs);	
+	
     router.route('/:job_id')
         .get(jobController.getJob)
         .put(jobController.putJob)
