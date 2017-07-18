@@ -17,7 +17,6 @@ module.exports.list = function(req, res) {
 module.exports.getWishlistByRefugeeId = function(req, res) {
     // Use the Wishlist model to find a specific Wishlist based on refugee_id
 	var myquery = { refugee: req.params.refugee_id, isDeleted : false }
-	console.log(req.params.refugee_id);
     Wishlist.find(myquery, function(err, wish) {
         if (err) {
             res.status(500).send(err)
