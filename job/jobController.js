@@ -53,7 +53,7 @@ module.exports.addJob = function (req, res) {
     User.findOne({_id: req.user})
         .exec(function (err, requestingUser) {
             if (err) {
-                res.status(500).send(error);
+                res.status(500).send(err);
                 return;
             }
             if (requestingUser) {
@@ -70,37 +70,68 @@ module.exports.addJob = function (req, res) {
 
     }
 module.exports.getJobsForUser = function (req, res) {
-    Job
-        .find({company: getCompanyFromUser(req.params.user_id)})
-        .exec(function(err, jobs) {
-            if(err){
-                res.status(500).send(err);
-                return;
-            }
-            res.status(201).json(jobs);
-    })
+    async.seq(
+        function (cb) {
+            getCompanyFromUser(req.params.user_id, function (err, company) {
+                if (err){
+                    res.status(500).send(err);
+                    return
+                }
+                cb(null, company)
+            });
+
+        },
+        function (company, cb) {
+            console.log('searching jobs for company-id: '+company);
+            Job
+                .find({company: company})
+                .exec(function(err, jobs) {
+                    if(err){
+                        cb(err,null)
+                        return;
+                    }
+                    cb(null, jobs);
+            })
+        }
+    )(function (err, jobs) {
+        if (err){
+            res.status(500).send(err);
+            return
+        }
+
+        res.status(201).json(jobs);
+    });
 }
 
 function getSkillNameList(inputSkills, cb) {
     var skillsWithName =[];
     async.each(inputSkills,function (inSkill, callback) {
-        Skill.findOne({_id: inSkill.name})
-            .exec(function (err, dbSkill){
-                errorcheck(err);
-                var newSkill = {
-                    _id: dbSkill['_id'],
-                    name: dbSkill['name'],
-                    power: inSkill['power']
-                };
-                skillsWithName.push(newSkill);
-                callback()
-            });
+        console.log('searching for skill');
+        console.log(inSkill);
+        if(inSkill._id == null){
+            Skill.findOne({_id: inSkill.name})
+                .exec(function (err, dbSkill){
+                    if(err){
+                        cb(err,null);
+                        return;
+                    }
+                    var newSkill = {
+                        _id: dbSkill['_id'],
+                        name: dbSkill['name'],
+                        power: inSkill['power']
+                    };
+                    skillsWithName.push(newSkill);
+                    callback();
+                });
+        }else{
+            skillsWithName.push(inSkill);
+            callback()
+        }
         }, function (err) {
             if (err) {
                 console.log('Error Building SkillList: '+err);
             } else {
                 if(skillsWithName.length == inputSkills.length) {
-                    console.log("setting Skilllist: done "+skillsWithName);
                     if(typeof cb == "function") {
                         cb(skillsWithName);
                     }
@@ -117,48 +148,75 @@ function getSkillNameList(inputSkills, cb) {
 
 // Create endpoint /api/jobs/:job_id for GET
 module.exports.getJob = function (req, res) {
+    console.log('getting job for id: '+req.params.job_id)
     Job
         .findById(req.params.job_id)
         .exec(function (err, job) {
-            console.log('processing job :'+job.title);
-            errorcheck(err);
-            getSkillNameList( job.skills , function (skillsWithName) {
-                    job.skills = skillsWithName;
-                    console.log('job which will be returend: '+job);
-                    res.status(201).json(job);
-                }
-            );
-
+            if (err) {
+                res.status(500).send(err);
+                console.log('get err: '+err);
+                return;
+            }
+            if (job==null) {
+                res.status(500).send(job);
+                console.log('get err: job empty');
+                return;
+            }
+            console.log('processing job :'+job);
+            if(job.skills){
+                getSkillNameList( job.skills , function (skillsWithName) {
+                        job.skills = skillsWithName;
+                        res.status(201).json(job);
+                        return;
+                    }
+                );
+            }else{
+                res.status(201).json(job);
+            }
         })
 }
 
+
 module.exports.putJob = function (req, res) {
+    if(!req.body.user){
+        res.status(400).send('user required');
+        return;
+    }
+    var job = req.body
+
+    console.log(req.body);
+
+    console.log("req body._id vs params: "+job._id+" "+req.params.job_id)
+    console.log('updating job_id: '+req.params.job_id);
     Job
-        .findByIdAndUpdate(req.params.job_id,req.body,
+        .findByIdAndUpdate(req.params.job_id,job,
             {//pass the new object to cb function
                 new: true,
                 //run validations
                 runValidators: true})
         .exec(function (err, job) {
-            errorcheck(err);
+            console.log('updateerror: '+err);
+            //todo errorscheck not working do it inline
+            errorcheck(err, res);
+            console.log('returning updated job: '+job);
             res.json(job);
         });
 }
 
 module.exports.deleteJob = function (req, res) {
     Job
-        .findById(req.param.job_id)
+        .findByIdAndRemove(req.params.job_id)
         .exec(function (err, job) {
-            errorcheck(err);
-            job.remove();
+            errorcheck(err, res);
+            console.log('removed job: '+job.title);
             res.sendStatus(200);
         })
 }
 
 
-function errorcheck(err){
+function errorcheck(err, res){
     if (err) {
-        res.status(500).send(error);
+        res.status(500).send(err);
         return;
     }
 }
@@ -168,17 +226,19 @@ function errorcheck(err){
 
 
 
-function getCompanyFromUser(userId) {
+function getCompanyFromUser(userId, cb) {
     User
         .findOne({_id: userId})
         .exec(function (err, user) {
             if (err) {
                 console.log(err);
                 res.status(500).send(err);
+                cb(err, null);
                 return;
             } else {
-                console.dir(user);
-                return user.company['_id']
+                console.log('found company for user: '+user.email+'; company: '+user.company);
+                cb(null,user.company);
+                return;
             }
         })
 }
