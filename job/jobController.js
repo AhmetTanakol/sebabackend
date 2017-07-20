@@ -113,6 +113,7 @@ function getSkillNameList(inputSkills, cb) {
                 .exec(function (err, dbSkill){
                     if(err){
                         cb(err,null);
+                        return;
                     }
                     var newSkill = {
                         _id: dbSkill['_id'],
@@ -120,11 +121,12 @@ function getSkillNameList(inputSkills, cb) {
                         power: inSkill['power']
                     };
                     skillsWithName.push(newSkill);
-                    callback()
+                    callback();
                 });
+        }else{
+            skillsWithName.push(inSkill);
+            callback()
         }
-        skillsWithName.push(inSkill);
-        callback()
         }, function (err) {
             if (err) {
                 console.log('Error Building SkillList: '+err);
